@@ -66,8 +66,9 @@ resource "aws_autoscaling_group" "asg" {
 }
 
 resource "aws_lb_target_group" "main" {
-  name     = "tf-example-lb-tg"
-  port     = 80
+  name     = "${var.name}-${var.env}-asg"
+  port     = var.app_port
   protocol = "HTTP"
   vpc_id   = var.vpc_id
+  tags     = merge(var.tags, { Name = "${var.name}-alb-${var.env}" })
 }
