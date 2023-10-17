@@ -73,7 +73,7 @@ resource "aws_lb_target_group" "main" {
   tags     = merge(var.tags, { Name = "${var.name}-alb-${var.env}" })
 }
 
-resource "aws_lb_listener_rule" "host_based_weighted_routing" {
+resource "aws_lb_listener_rule" "rule" {
   listener_arn = var.listener_arn
   priority     = var.listener_priority
 
@@ -87,4 +87,12 @@ resource "aws_lb_listener_rule" "host_based_weighted_routing" {
       values = [local.dns_name]
     }
   }
+}
+
+resource "aws_route53_record" "main" {
+  zone_id = var.domain_id
+  name    = local.dns_name
+  type    = "CNAME"
+  ttl     = 30
+  records = [var.lb_dns_name]
 }
